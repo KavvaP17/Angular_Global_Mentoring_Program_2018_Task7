@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { Course } from '../../../courses/models/course.model';
 import { CourseService } from '../../services/course/course.service';
 import { SearchPipe } from '../../pipes/search/search.pipe';
@@ -11,6 +11,10 @@ import { SearchPipe } from '../../pipes/search/search.pipe';
 })
 export class CoursesListComponent implements OnInit, OnChanges {
   @Input() search: string;
+  @Input() pageIndex: number;
+  @Input() pageSize: number;
+  @Output() delete = new EventEmitter<void>();
+
   public courses: Array<Course> = [];
 
   public coursesArrayEmptyMsg = 'NO DATA, PLEASE CLICK ADD COURSE TO INSERT NEW CORSE';
@@ -18,17 +22,18 @@ export class CoursesListComponent implements OnInit, OnChanges {
   constructor(private courseService: CourseService,
               private searchPipe: SearchPipe) { }
 
-  ngOnInit() {
-    this.courses = this.courseService.getCoursesList();
-  }
+  ngOnInit() {}
 
   ngOnChanges() {
-    this.courses = this.searchPipe.transform(this.courseService.getCoursesList(), this.search);
+    const searchCourses = this.searchPipe.transform(this.courseService.getCoursesList(), this.search);
+    this.courses = searchCourses.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
   }
 
 
   public deleteCourse(id): void {
     this.courseService.removeCourse(id);
-    this.courses = this.searchPipe.transform(this.courseService.getCoursesList(), this.search);
+    const searchCourses = this.searchPipe.transform(this.courseService.getCoursesList(), this.search);
+    this.courses = searchCourses.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
+    this.delete.emit();
   }
 }

@@ -25,6 +25,7 @@ import { DialogComponent } from './components/dialog/dialog.component';
 import { AddCourseComponent } from './components/add-course/add-course.component';
 import { CoursesRoutingModule } from './courses-routing.module';
 import { EditCourseComponent } from './components/edit-course/edit-course.component';
+import { PaginationComponent } from './components/pagination/pagination.component';
 
 @NgModule({
   imports: [
@@ -54,7 +55,8 @@ import { EditCourseComponent } from './components/edit-course/edit-course.compon
     SearchPipe,
     DialogComponent,
     AddCourseComponent,
-    EditCourseComponent
+    EditCourseComponent,
+    PaginationComponent
   ],
   entryComponents: [DialogComponent],
   exports: [CoursesComponent]

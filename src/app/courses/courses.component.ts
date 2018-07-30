@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {PageEvent} from '@angular/material';
-import { Course } from '../courses/models/course.model';
 import { CourseService } from './services/course/course.service';
+import { SearchPipe } from './pipes/search/search.pipe';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-courses',
@@ -10,31 +10,37 @@ import { CourseService } from './services/course/course.service';
 })
 export class CoursesComponent implements OnInit {
 
-  public searchValue: string = '';
+  public searchValue = '';
+  public coursesList;
   public isAddPageOpen = false;
+  public length = 0;
+  public pageIndex = 0;
+  public pageSize = 5;
 
-  // MatPaginator Inputs
-  public length: Number = 100;
-  public pageSize: Number = 10;
-  public pageSizeOptions: Array<Number> = [5, 10, 25, 100];
+  constructor(private courseService: CourseService,
+              private searchPipe: SearchPipe) { }
 
-  // MatPaginator Output
-  public pageEvent: PageEvent;
-
-  constructor() { }
-
-  ngOnInit() {}
-
-  public setPageSizeOptions(setPageSizeOptionsInput: string) {
-    this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
+  ngOnInit() {
+    this.coursesList = this.courseService.getCoursesList();
+    this.length = this.searchPipe.transform(this.courseService.getCoursesList(), this.searchValue).length;
   }
 
   public search(searchValue): void {
     this.searchValue = searchValue;
+    this.length = this.searchPipe.transform(this.courseService.getCoursesList(), this.searchValue).length;
   }
 
   public closePage(closeAddCoursePage): void {
     this.isAddPageOpen = !closeAddCoursePage;
   }
 
+  public getPaginationData(pageEvent: PageEvent) {
+    this.pageIndex = pageEvent.pageIndex;
+    this.pageSize = pageEvent.pageSize;
+    this.length = this.searchPipe.transform(this.courseService.getCoursesList(), this.searchValue).length;
+  }
+
+  public delete() {
+    this.length = this.searchPipe.transform(this.courseService.getCoursesList(), this.searchValue).length;
+  }
 }

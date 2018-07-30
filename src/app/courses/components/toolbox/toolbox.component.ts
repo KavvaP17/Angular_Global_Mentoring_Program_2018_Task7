@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,7 +20,7 @@ export class ToolboxComponent implements OnInit {
   }
 
   public openAddCoursePage() {
-    this.router.navigate(['courses','new']);
+    this.router.navigate(['courses', 'new']);
   }
 
 }
